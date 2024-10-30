@@ -3,8 +3,17 @@
 このプロジェクトは、FastAPIを使用したバックエンドと、フロントエンド、そしていくつかのサービス（Milvus、MongoDB、Redis）を含むフルスタックアプリケーションです。
 
 ## プロジェクト構成
-cse-project/ .env backend/ app/ Dockerfile main.py requirements.txt docker-compose.yml frontend/ Dockerfile services/ milvus/ mongodb/ redis/
-
+/cse-project
+├── docker-compose.yml
+├── .env
+├── frontend/
+│   └── Dockerfile
+├── backend/
+│   └── Dockerfile
+└── services/
+    ├── mongodb/
+    ├── redis/
+    └── milvus/
 
 ## セットアップ
 
