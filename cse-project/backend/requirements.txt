@@ -1,0 +1,10 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+python-dotenv==1.0.0
+motor==3.3.1
+redis==5.0.1
+pymilvus==2.3.3
+langchain==0.0.330
+llama-index==0.8.54
+pydantic==2.4.2
+websockets==12.0
