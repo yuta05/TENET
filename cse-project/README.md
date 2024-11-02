@@ -93,6 +93,4 @@
 - `docker-compose.yml`: Docker Compose設定ファイル。
 - `.env`: 環境変数ファイル。
 
-## ライセンス
 
-このプロジェクトはMITライセンスの下で公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
