@@ -3,6 +3,7 @@
 このプロジェクトは、FastAPIを使用したバックエンドと、フロントエンド、そしていくつかのサービス（Milvus、MongoDB、Redis）を含むフルスタックアプリケーションです。
 
 ## プロジェクト構成
+```
 /cse-project
 ├── docker-compose.yml
 ├── .env
@@ -14,7 +15,7 @@
     ├── mongodb/
     ├── redis/
     └── milvus/
-
+```
 ## セットアップ
 
 ### 前提条件
