@@ -1,50 +1,240 @@
-# React + TypeScript + Vite
+以下は、視覚的に改善されたREADME.mdの例です。
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+```markdown
+# Customer Service Engine (CSE) Frontend
 
-Currently, two official plugins are available:
+Frontend implementation for the Customer Service Engine using React, TypeScript, and shadcn/ui.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Table of Contents
+- [Project Structure](#project-structure)
+- [Tech Stack](#tech-stack)
+- [Setup](#setup)
+- [Development](#development)
+- [Components](#components)
+- [State Management](#state-management)
+- [Styling](#styling)
+- [Git Workflow](#git-workflow)
+- [Build and Deploy](#build-and-deploy)
+- [Future Enhancements](#future-enhancements)
+- [Troubleshooting](#troubleshooting)
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+frontend/
+├── public/
+│   └── assets/
+│       ├── bot-avatar.png
+│       └── user-avatar.png
+├── src/
+│   ├── components/
+│   │   ├── chat/
+│   │   │   ├── ChatContainer.tsx
+│   │   │   ├── ChatHeader.tsx
+│   │   │   ├── ChatInput.tsx
+│   │   │   ├── ChatMessages.tsx
+│   │   │   ├── ChatLoading.tsx
+│   │   │   └── ChatError.tsx
+│   │   └── ui/
+│   │       ├── alert.tsx
+│   │       ├── avatar.tsx
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       ├── input.tsx
+│   │       └── scroll-area.tsx
+│   ├── lib/
+│   │   └── utils.ts
+│   ├── stores/
+│   │   └── chat-store.ts
+│   ├── types/
+│   │   └── chat.ts
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Tech Stack
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- **React 18**
+- **TypeScript**
+- **Vite**
+- **Tailwind CSS**
+- **shadcn/ui**
+- **Zustand**
+- **Radix UI**
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+## Setup
+
+### Prerequisites
+
+- Node.js 18.x or higher
+- npm 9.x or higher
+
+### Installation
+
+```sh
+# Clone the repository
+git clone [repository-url]
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+VITE_API_URL=http://localhost:8000
+VITE_WS_URL=ws://localhost:8000/ws
+```
+
+## Development
+
+### Available Scripts
+
+```sh
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run linter
+npm run lint
+
+# Preview production build
+npm run preview
+```
+
+## Coding Guidelines
+
+- Use TypeScript for type safety
+- Follow component-based architecture
+- Implement responsive design
+- Write clean and documented code
+- Follow shadcn/ui design system
+
+## Components
+
+### Chat Components
+
+| Component      | Description            |
+| -------------- | ---------------------- |
+| ChatContainer  | Main chat container    |
+| ChatHeader     | Chat header section    |
+| ChatMessages   | Message display area   |
+| ChatInput      | Message input section  |
+| ChatLoading    | Loading indicator      |
+| ChatError      | Error display          |
+
+### UI Components
+
+| Component      | Description            |
+| -------------- | ---------------------- |
+| Alert          | Notifications and errors |
+| Avatar         | User and bot avatars   |
+| Button         | Button elements        |
+| Card           | Card container         |
+| Input          | Input fields           |
+| ScrollArea     | Scrollable areas       |
+
+## State Management
+
+Using Zustand for state management:
+
+```ts
+interface Message {
+  id: string
+  content: string
+  role: "user" | "assistant"
+  timestamp: Date
+}
+
+interface ChatStore {
+  messages: Message[]
+  addMessage: (message: Message) => void
+  clearMessages: () => void
+}
+```
+
+### Usage Example
+
+```ts
+import { useChatStore } from '@/stores/chat-store'
+
+const Component = () => {
+  const messages = useChatStore((state) => state.messages)
+  const addMessage = useChatStore((state) => state.addMessage)
+  
+  // Use the store
+}
+```
+
+## Styling
+
+- Using Tailwind CSS for styling
+- Custom styles in `index.css`
+- Following shadcn/ui design system
+- Responsive design patterns
+
+## Git Workflow
+
+### Commit Messages
+
+Use the following prefixes:
+
+- `feat`: New features
+- `fix`: Bug fixes
+- `docs`: Documentation updates
+- `style`: Code style changes
+- `refactor`: Code refactoring
+- `test`: Test updates
+- `chore`: Maintenance
+
+### Branch Strategy
+
+- `main`: Production branch
+- `develop`: Development branch
+- `feature/*`: Feature branches
+- `fix/*`: Bug fix branches
+
+## Build and Deploy
+
+```sh
+# Production build
+npm run build
+
+# Preview build
+npm run preview
+```
+
+## Future Enhancements
+
+- Message read status
+- Typing indicators
+- File attachments
+- Emoji picker
+- Message search
+- Dark mode support
+
+## Troubleshooting
+
+### Common issues and solutions:
+
+#### Build Errors
+
+- Clear npm cache: `npm cache clean --force`
+- Remove `node_modules`: `rm -rf node_modules`
+- Reinstall dependencies: `npm install`
+
+#### Development Server Issues
+
+- Check port availability
+- Verify environment variables
+- Check for conflicting processes
 ```
