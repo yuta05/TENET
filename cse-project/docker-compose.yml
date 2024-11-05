@@ -5,57 +5,93 @@ services:
     build: 
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: cse-frontend
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV:-development}
+      - VITE_API_URL=http://localhost:${BACKEND_PORT:-8080}
+      - VITE_WS_URL=ws://localhost:${BACKEND_PORT:-8080}/ws
     depends_on:
       - backend
+    networks:
+      - cse-network
+    restart: unless-stopped
 
   backend:
     build: 
       context: ./backend
       dockerfile: Dockerfile
+    container_name: cse-backend
     ports:
-      - "8080:8080"
+      - "${BACKEND_PORT:-8080}:8080"
     volumes:
       - ./backend:/app
     environment:
+      - ENVIRONMENT=${ENVIRONMENT:-development}
       - MONGODB_URL=mongodb://mongodb:27017
+      - MONGODB_DB_NAME=${MONGODB_DB_NAME:-cse}
       - REDIS_URL=redis://redis:6379
       - MILVUS_HOST=milvus
-      - MILVUS_PORT=19530
+      - MILVUS_PORT=${MILVUS_PORT:-19530}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       - mongodb
       - redis
       - milvus
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - cse-network
+    restart: unless-stopped
 
   mongodb:
     image: mongo:latest
+    container_name: cse-mongodb
     ports:
-      - "27017:27017"
+      - "${MONGODB_PORT:-27017}:27017"
     volumes:
       - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGODB_DB_NAME:-cse}
+    networks:
+      - cse-network
+    restart: unless-stopped
 
   redis:
     image: redis:latest
+    container_name: cse-redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - cse-network
+    restart: unless-stopped
 
   milvus:
     image: milvusdb/milvus:latest
+    container_name: cse-milvus
     ports:
-      - "19530:19530"
+      - "${MILVUS_PORT:-19530}:19530"
     volumes:
       - milvus_data:/var/lib/milvus
+    environment:
+      - MILVUS_HOST=${MILVUS_HOST:-milvus}
+      - MILVUS_PORT=${MILVUS_PORT:-19530}
+    networks:
+      - cse-network
+    restart: unless-stopped
+
+networks:
+  cse-network:
+    driver: bridge
 
 volumes:
   mongodb_data:
+    name: cse-mongodb-data
   redis_data:
+    name: cse-redis-data
   milvus_data:
+    name: cse-milvus-data
