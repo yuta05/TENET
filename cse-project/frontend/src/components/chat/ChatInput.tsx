@@ -1,27 +1,35 @@
 // src/components/chat/ChatInput.tsx
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useChatStore } from "@/stores/chat-store"
-import { useState } from "react"
-import { SendHorizontal } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useChatStore } from "@/stores/chat-store";
+import { useState } from "react";
+import { SendHorizontal } from "lucide-react";
 
-export function ChatInput() {
-  const [input, setInput] = useState("")
-  const addMessage = useChatStore((state) => state.addMessage)
+interface ChatInputProps {
+  socket: WebSocket | null;
+}
+
+export function ChatInput({ socket }: ChatInputProps) {
+  const [input, setInput] = useState("");
+  const addMessage = useChatStore((state) => state.addMessage);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim()) return
+    e.preventDefault();
+    if (!input.trim()) return;
 
     addMessage({
       id: Date.now().toString(),
       content: input,
       role: "user",
       timestamp: new Date(),
-    })
+    });
 
-    setInput("")
-  }
+    if (socket) {
+      socket.send(input);
+    }
+
+    setInput("");
+  };
 
   return (
     <form onSubmit={handleSubmit} className="p-4 border-t">
@@ -37,5 +45,5 @@ export function ChatInput() {
         </Button>
       </div>
     </form>
-  )
+  );
 }
