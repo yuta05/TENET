@@ -21,4 +21,4 @@ RUN if [ "$ENVIRONMENT" = "development" ] ; then \
 COPY . .
 
 # FastAPI アプリケーションを起動
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

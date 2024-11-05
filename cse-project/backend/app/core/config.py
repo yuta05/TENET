@@ -4,11 +4,11 @@ from typing import List
 class Settings(BaseSettings):
     PROJECT_NAME: str = "CSE Chatbot"
     VERSION: str = "0.1.0"
-    PORT: int = 8080    # 追加
+    PORT: int = 8000    # 追加
     jwt_secret: str
     jwt_algorithm: str
     # CORS
-    ALLOWED_ORIGINS: List[str] = ["http://localhost:3000"]
+    ALLOWED_ORIGINS: List[str] = ["http://localhost:3000","http://127.0.0.1:5173"]
     
     # MongoDB
     MONGODB_URL: str 
