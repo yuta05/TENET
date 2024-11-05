@@ -12,9 +12,14 @@ class ConnectionManager:
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
+        logger.info("WebSocket connection established")
 
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
+        logger.info("WebSocket connection closed")
+
+    async def send_personal_message(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
 
     async def broadcast(self, message: str):
         for connection in self.active_connections:
@@ -28,6 +33,10 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            await manager.broadcast(f"Message: {data}")
+            logger.info(f"Received message: {data}")
+            # 個別のクライアントにメッセージを送信
+            await manager.send_personal_message(f"Message text was: {data}", websocket)
+            # 全クライアントにブロードキャスト
+            await manager.broadcast(f"Broadcast message: {data}")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
