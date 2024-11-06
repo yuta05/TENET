@@ -1,5 +1,5 @@
 // src/components/chat/ChatContainer.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatInput } from "./ChatInput";
@@ -31,7 +31,7 @@ export function ChatContainer() {
       addMessage({
         id: Date.now().toString(),
         content: event.data,
-        role: "bot",
+        role: "assistant",
         timestamp: new Date(),
       });
     };
