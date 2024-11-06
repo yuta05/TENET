@@ -1,15 +1,14 @@
-import os
 from dotenv import load_dotenv
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from app.models.chat import Message  # Messageクラスをインポート
-
+from app.core.config import settings  # settingsをインポート
 # .envファイルから環境変数を読み込む
 load_dotenv()
 class AIService:
     def __init__(self):
         # 環境変数からOpenAIのAPIキーを取得
-        api_key = os.getenv('OPENAI_API_KEY')
+        api_key = settings.OPENAI_API_KEY
         if not api_key:
             raise ValueError("OpenAI API key is not set in the environment variables")
         
