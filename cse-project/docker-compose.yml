@@ -7,10 +7,12 @@ services:
       dockerfile: Dockerfile
     container_name: cse-frontend
     ports:
-      - "${FRONTEND_PORT:-3000}:3000"
+      - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    env_file:
+      - ./frontend/.env
     environment:
       - NODE_ENV=${NODE_ENV:-development}
       - VITE_API_URL=http://localhost:${BACKEND_PORT:-8000}
@@ -33,20 +35,11 @@ services:
       dockerfile: Dockerfile
     container_name: cse-backend
     ports:
-      - "${BACKEND_PORT:-8000}:8000"
+      - "8000:8000"
     volumes:
       - ./backend:/app
-    environment:
-      - ENVIRONMENT=${ENVIRONMENT:-development}
-      - MONGODB_URL=mongodb://mongodb:27017
-      - MONGODB_DB_NAME=${MONGODB_DB_NAME:-cse}
-      - REDIS_URL=redis://redis:6379
-      - MILVUS_HOST=milvus
-      - MILVUS_PORT=${MILVUS_PORT:-19530}
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-your_default_openai_api_key}
-      - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY:-your_langchain_api_key}
-      - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-false}
-      - TAVILY_API_KEY=${TAVILY_API_KEY:-your_tavily_api_key}
+    env_file:
+      - ./backend/.env
     depends_on:
       - mongodb
       - redis
@@ -54,18 +47,13 @@ services:
     networks:
       - cse-network
     restart: unless-stopped
-    command: >
-      sh -c "if [ '$ENVIRONMENT' = 'development' ]; then
-              uvicorn main:app --host 0.0.0.0 --port 8000 --reload;
-            else
-              uvicorn main:app --host 0.0.0.0 --port 8000;
-            fi"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   mongodb:
     image: mongo:latest
     container_name: cse-mongodb
     ports:
-      - "${MONGODB_PORT:-27017}:27017"
+      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
     environment:
@@ -78,7 +66,7 @@ services:
     image: redis:latest
     container_name: cse-redis
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -89,7 +77,7 @@ services:
     image: milvusdb/milvus:latest
     container_name: cse-milvus
     ports:
-      - "${MILVUS_PORT:-19530}:19530"
+      - "19530:19530"
     volumes:
       - milvus_data:/var/lib/milvus
     environment:
