@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     
     # OpenAI
     OPENAI_API_KEY: str
+
+    # Langchain
+    LANGCHAIN_API_KEY: str
+    LANGCHAIN_TRACING_V2: str
+    
+    # Tavily
+    TAVILY_API_KEY: str
     
     class Config:
         env_file = ".env"
