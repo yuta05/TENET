@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker:dev": "docker build -t frontend-app-dev -f Dockerfile . && docker run -d -p 3000:3000 --env-file .env --name frontend-app-dev frontend-app-dev",
+    "docker:prod": "docker build -t frontend-app-prod -f Dockerfile . && docker run -d -p 3000:3000 --env-file .env --name frontend-app-prod frontend-app-prod"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
