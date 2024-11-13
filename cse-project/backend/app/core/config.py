@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     
     # Tavily
     TAVILY_API_KEY: str
+
+
+    # Anthropic
+    ANTHROPIC_API_KEY: str
     
     class Config:
         env_file = ".env"
