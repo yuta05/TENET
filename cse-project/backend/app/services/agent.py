@@ -32,9 +32,6 @@ class Assistant:
 
     def __call__(self, state: State, config: RunnableConfig):
         while True:
-            configuration = config.get("configurable", {})
-            passenger_id = configuration.get("passenger_id", None)
-            state = {**state, "user_info": passenger_id}
             result = self.runnable.invoke(state)
             # If the LLM happens to return an empty response, we will re-prompt it
             # for an actual response.
@@ -62,7 +59,7 @@ llm = ChatOpenAI(model="gpt-4-turbo-preview", api_key=settings.OPENAI_API_KEY)
 # Initialize TavilySearchResults with TAVILY_API_KEY
 
 
-primary_assistant_prompt = ChatPromptTemplate.from_messages(
+assistant_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
@@ -77,12 +74,12 @@ primary_assistant_prompt = ChatPromptTemplate.from_messages(
     ]
 ).partial(time=datetime.now)
 
-part_1_tools = [
-    # TavilySearchResults(max_results=1),
+part_2_tools = [
+    #TavilySearchResults(max_results=1),
     fetch_user_flight_information,
     search_flights,
     lookup_policy,
-    update_ticket_to_new_flight,
+    update_ticket_to_new_flight, 
     cancel_ticket,
     search_car_rentals,
     book_car_rental,
@@ -97,4 +94,4 @@ part_1_tools = [
     update_excursion,
     cancel_excursion,
 ]
-part_1_assistant_runnable = primary_assistant_prompt | llm.bind_tools(part_1_tools)
+part_2_assistant_runnable = assistant_prompt | llm.bind_tools(part_2_tools)

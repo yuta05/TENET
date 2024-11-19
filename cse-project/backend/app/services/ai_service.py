@@ -3,7 +3,7 @@ from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from app.models.chat import Message  # Messageクラスをインポート
 from app.core.config import settings  # settingsをインポート
-from app.services.graph import part_1_graph  # Import part_1_graph from graph.py
+from app.services.graph import part_2_graph  # Import part_2_graph from graph.py
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 import uuid
 
@@ -43,13 +43,19 @@ class AIService:
             # Convert messages to supported types
             state["messages"] = convert_messages_to_supported_types(state["messages"])
             
-            # part_1_graphを使用して応答を生成
-            events = part_1_graph.stream(
+                    # デバッグ用の出力を追加
+            print("Converted messages:")
+            for i, msg in enumerate(state["messages"], start=1):
+                print(f"{i}: {msg} (type: {type(msg).__name__})")
+
+            # part_2_graphを使用して応答を生成
+            events = part_2_graph.stream(
                 state, config, stream_mode="values"
             )
             responses = []
             seen_messages = set()
             for event in events:
+                event["messages"][-1].pretty_print()
                 for msg in event.get("messages", []):
                     if isinstance(msg, AIMessage) and hasattr(msg, "content"):
                         if msg.content not in seen_messages and msg.content not in _printed:
