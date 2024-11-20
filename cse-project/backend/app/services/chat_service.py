@@ -1,6 +1,6 @@
 from app.services.ai_service import AIService
 from datetime import datetime
-from app.services.graph import part_2_graph
+from app.services.graph import part_3_graph
 from langchain_core.messages import ToolMessage, SystemMessage, HumanMessage, AIMessage
 from app.models.chat import Message
 import asyncio
@@ -40,10 +40,10 @@ class ChatService:
         # Handle interrupts
         response = await self.check_for_interrupts_and_handle_approvals(state, response, websocket)
         
-        return response
+        return response if response else None
 
     async def check_for_interrupts_and_handle_approvals(self, state, response, websocket: WebSocket):
-        snapshot = part_2_graph.get_state(self.config)
+        snapshot = part_3_graph.get_state(self.config)
         while snapshot.next:
             # Send a message to the user asking for approval
             approval_message = Message(id=str(uuid.uuid4()), content="Do you approve of the above actions? Type 'y' to continue; otherwise, explain your requested changes.", role="system", timestamp=datetime.now())
@@ -57,12 +57,12 @@ class ChatService:
             
             if user_input.strip().lower() == 'y':
                 # Just continue
-                result = part_2_graph.invoke(None, self.config)
+                result = part_3_graph.invoke(None, self.config)
             else:
                 # Satisfy the tool invocation by providing instructions on the requested changes / change of mind
                 last_message = snapshot.values['messages'][-1]
                 tool_call_id = last_message.tool_calls[0]["id"] if last_message.tool_calls else None
-                result = part_2_graph.invoke(
+                result = part_3_graph.invoke(
                     {
                         "messages": [
                             ToolMessage(
@@ -78,11 +78,12 @@ class ChatService:
             print('output_message', output_message)
             if output_message:  # 空のメッセージを送信しないようにする
                 await self.output_message(Message(id=str(uuid.uuid4()), content=output_message, role="system", timestamp=datetime.now()), websocket)
-            snapshot = part_2_graph.get_state(self.config)
+            snapshot = part_3_graph.get_state(self.config)
         
             break
         
-        return None  # 応答がない場合は None を返す
+        print('response', response)
+        return response if response else None
 
     async def _wait_for_user_input(self, websocket: WebSocket):
         # This method waits for the user's response via the chat service

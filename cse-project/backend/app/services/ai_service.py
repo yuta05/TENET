@@ -3,7 +3,7 @@ from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from app.models.chat import Message  # Messageクラスをインポート
 from app.core.config import settings  # settingsをインポート
-from app.services.graph import part_2_graph  # Import part_2_graph from graph.py
+from app.services.graph import part_3_graph  # Import part_3_graph from graph.py
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 import uuid
 
@@ -48,8 +48,8 @@ class AIService:
             for i, msg in enumerate(state["messages"], start=1):
                 print(f"{i}: {msg} (type: {type(msg).__name__})")
 
-            # part_2_graphを使用して応答を生成
-            events = part_2_graph.stream(
+            # part_3_graphを使用して応答を生成
+            events = part_3_graph.stream(
                 state, config, stream_mode="values"
             )
             responses = []
