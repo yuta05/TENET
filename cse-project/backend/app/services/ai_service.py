@@ -1,10 +1,10 @@
 from dotenv import load_dotenv
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from app.models.chat import Message  # Messageクラスをインポート
 from app.core.config import settings  # settingsをインポート
-from app.services.graph import part_3_graph  # Import part_3_graph from graph.py
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from app.services.cs_agents.agent import part_4_graph  # Import part_4_graph from graph.py
 import uuid
 
 # .envファイルから環境変数を読み込む
@@ -48,8 +48,8 @@ class AIService:
             for i, msg in enumerate(state["messages"], start=1):
                 print(f"{i}: {msg} (type: {type(msg).__name__})")
 
-            # part_3_graphを使用して応答を生成
-            events = part_3_graph.stream(
+            # part_4_graphを使用して応答を生成
+            events = part_4_graph.stream(
                 state, config, stream_mode="values"
             )
             responses = []
