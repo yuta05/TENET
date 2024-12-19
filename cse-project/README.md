@@ -13,9 +13,7 @@
 │   └── .env
 │   └── Dockerfile
 └── services/
-    ├── mongodb/
-    ├── redis/
-    └── milvus/
+    ├── sample_data.db
 ```
 ## セットアップ
 
@@ -56,14 +54,8 @@ PROJECT_NAME=Customer Service Engine
 VERSION=0.1.0
 PORT=8080
 ENVIRONMENT=development
-# Database
-MONGODB_URL=mongodb://mongodb:27017
-MONGODB_DB_NAME=cse
-# Redis
-REDIS_URL=redis://redis:6379
-# Milvus
-MILVUS_HOST=milvus
-MILVUS_PORT=19530
+DATABASE_URL=.app/services/sample_data.db
+NODE_ENV=development
 # OpenAI
 OPENAI_API_KEY=your_openai_api_key
 # Langchain
@@ -76,6 +68,7 @@ JWT_SECRET=your_jwt_secret
 JWT_ALGORITHM=HS256
 # CORS
 ALLOWED_ORIGINS=["http://localhost:3000"]
+BACKEND_PORT=8000
 ```
 
 #### `./frontend/.env` の設定

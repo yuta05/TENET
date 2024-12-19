@@ -38,63 +38,17 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      - ./cse-project/services/sample_data.db:/app/services/sample_data.db
     env_file:
       - ./backend/.env
-    depends_on:
-      - mongodb
-      - redis
-      - milvus
+    environment:
+      - DATABASE_URL=./app/services/sample_data.db
+      - NODE_ENV=${NODE_ENV:-development}
     networks:
       - cse-network
     restart: unless-stopped
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
-  mongodb:
-    image: mongo:latest
-    container_name: cse-mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    environment:
-      - MONGO_INITDB_DATABASE=${MONGODB_DB_NAME:-cse}
-    networks:
-      - cse-network
-    restart: unless-stopped
-
-  redis:
-    image: redis:latest
-    container_name: cse-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - cse-network
-    restart: unless-stopped
-
-  milvus:
-    image: milvusdb/milvus:latest
-    container_name: cse-milvus
-    ports:
-      - "19530:19530"
-    volumes:
-      - milvus_data:/var/lib/milvus
-    environment:
-      - MILVUS_HOST=${MILVUS_HOST:-milvus}
-      - MILVUS_PORT=${MILVUS_PORT:-19530}
-    networks:
-      - cse-network
-    restart: unless-stopped
-
 networks:
   cse-network:
     driver: bridge
-
-volumes:
-  mongodb_data:
-    name: cse-mongodb-data
-  redis_data:
-    name: cse-redis-data
-  milvus_data:
-    name: cse-milvus-data

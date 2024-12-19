@@ -15,7 +15,7 @@ class ChatService:
         self.thread_id = str(uuid.uuid4())
         self.config = {
             "configurable": {
-                "passenger_id": "3442 587242",
+                "customer_id": "CUST-001",
                 "thread_id": self.thread_id,
             }
         }

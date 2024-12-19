@@ -4,7 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api import chat, health
 from app.websockets import connection
-from app.db.mongodb import connect_to_mongo, close_mongo_connection
+import sqlite3
+import os
+from contextlib import asynccontextmanager
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
@@ -17,14 +19,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# イベントハンドラー
-@app.on_event("startup")
-async def startup_event():
-    await connect_to_mongo()
+# SQLite データベース接続
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    db_path = os.getenv("DATABASE_URL", settings.DATABASE_URL)
+    db_dir = os.path.dirname(db_path)
+    print(f"Connecting to database at {db_path}")
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    await close_mongo_connection()
+    # ディレクトリが存在しない場合は作成
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir)
+    
+    # データベース接続
+    # try:
+    #     app.state.db = sqlite3.connect(db_path)
+    # except sqlite3.OperationalError as e:
+    #     print(f"Error connecting to database: {e}")
+    #     raise e
+    try:
+        yield
+    finally:
+        app.state.db.close()
+
+app = FastAPI(lifespan=lifespan)
 
 # ルーター
 app.include_router(health.router, tags=["health"])
