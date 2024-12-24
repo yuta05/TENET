@@ -7,10 +7,10 @@
 /cse-project
 ├── docker-compose.yml
 ├── frontend/
-│   └── .env
+│   └── .env.example
 │   └── Dockerfile
 ├── backend/
-│   └── .env
+│   └── .env.example
 │   └── Dockerfile
 ├── db/
 │   └── sample_data.sql
@@ -45,7 +45,7 @@ Python 3.xをインストールするには、公式サイトのインストー�
 
 ### 環境変数
 
-環境変数はそれぞれのディレクトリにある `.env` ファイルに設定します。以下の内容を参考にして、必要な環境変数を設定してください。
+環境変数はそれぞれのディレクトリにある `.env` ファイルに設定します。`.env` ファイルの例は `.env.example` ファイルにあり、このファイルが `setup.py` によって参照されます。以下の内容を参考にして、必要な環境変数を設定してください。
 
 #### `./backend/.env` の設定
 
