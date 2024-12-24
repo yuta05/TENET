@@ -1,4 +1,5 @@
 import subprocess
+import sqlite3
 
 def run_command(command):
     try:
@@ -12,12 +13,21 @@ def run_command(command):
         print(e.stderr.decode())
         raise
 
+def initialize_database(db_path, sql_script_path):
+    with sqlite3.connect(db_path) as conn:
+        with open(sql_script_path, 'r') as f:
+            conn.executescript(f.read())
+    print(f"Database initialized at {db_path}")
+
 def setup_services():
     print("Stopping any running containers...")
     run_command('docker-compose down')
 
     print("Building and running all containers in development mode...")
     run_command('docker-compose up --build -d')
+
+    print("Initializing the database...")
+    initialize_database('./backend/app/db/sample_data.db', './backend/app/db/sample_data.sql')
 
     print("\nSetup completed successfully!")
     print("Frontend is accessible at: http://localhost:3000/")

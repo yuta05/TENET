@@ -22,7 +22,7 @@ app.add_middleware(
 # SQLite データベース接続
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    db_path = os.getenv("DATABASE_URL", settings.DATABASE_URL)
+    db_path = settings.DATABASE_URL
     db_dir = os.path.dirname(db_path)
     print(f"Connecting to database at {db_path}")
 

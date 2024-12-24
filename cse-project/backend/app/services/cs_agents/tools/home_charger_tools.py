@@ -1,10 +1,11 @@
 import sqlite3
 import os
 from typing import Optional
+from app.core.config import settings
 from langchain_core.tools import tool
 from langchain_core.runnables import RunnableConfig
 
-db = os.getenv("DATABASE_URL", "/app/services/sample_data.db")
+db = settings.DATABASE_URL
 print(f"db: {db}")
 def check_db_exists(db_path: str) -> bool:
     """

@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     ENVIRONMENT: str
     jwt_secret: str
     jwt_algorithm: str
-    DATABASE_URL: str = "./app/services/sample_data.db"
+    DATABASE_URL: str = "/app/db/sample_data.db"
     NODE_ENV: str = "development"
     BACKEND_PORT: int = 8000
     # CORS

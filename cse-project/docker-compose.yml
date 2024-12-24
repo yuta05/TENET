@@ -38,12 +38,11 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-      - ./cse-project/services/sample_data.db:/app/services/sample_data.db
+      - ./backend/app/db/sample_data.db:/app/db/sample_data.db
     env_file:
       - ./backend/.env
     environment:
-      - DATABASE_URL=./app/services/sample_data.db
-      - NODE_ENV=${NODE_ENV:-development}
+      - DATABASE_URL=/app/db/sample_data.db
     networks:
       - cse-network
     restart: unless-stopped
