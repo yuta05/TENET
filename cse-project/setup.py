@@ -1,7 +1,6 @@
 import os
-import shutil
 import subprocess
-import sqlite3
+from database import initialize_database  # 既に移動済みの関数をインポート
 
 def run_command(command):
     try:
@@ -15,33 +14,9 @@ def run_command(command):
         print(e.stderr.decode())
         raise
 
-def copy_env_example(src, dest):
-    if os.path.exists(src):
-        shutil.copy(src, dest)
-        print(f"{dest} created successfully from {src}.")
-    else:
-        print(f"{src} does not exist. Please create the file first.")
-
-def create_env_files():
-    # Paths to .env.example and target .env files
-    frontend_env_example = './frontend/.env.example'
-    backend_env_example = './backend/.env.example'
-    frontend_env = './frontend/.env'
-    backend_env = './backend/.env'
-
-    # Create .env files by copying .env.example
-    copy_env_example(frontend_env_example, frontend_env)
-    copy_env_example(backend_env_example, backend_env)
-
-def initialize_database(db_path, sql_script_path):    
-    with sqlite3.connect(db_path) as conn:
-        with open(sql_script_path, 'r') as f:
-            conn.executescript(f.read())
-    print(f"Database initialized at {db_path}")
-
 def setup_services():
     print("Creating .env files...")
-    create_env_files()
+    run_command('python env_setup.py')  # env_setup.py を実行
 
     print("Stopping any running containers...")
     run_command('docker-compose down')
