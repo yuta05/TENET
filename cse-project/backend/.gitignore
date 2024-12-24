@@ -18,4 +18,4 @@ htmlcov/
 !.env.example
 
 # Database files
-db/sample_data.db
+app/db/sample_data.db

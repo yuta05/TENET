@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sqlite3
 
@@ -13,7 +14,7 @@ def run_command(command):
         print(e.stderr.decode())
         raise
 
-def initialize_database(db_path, sql_script_path):
+def initialize_database(db_path, sql_script_path):    
     with sqlite3.connect(db_path) as conn:
         with open(sql_script_path, 'r') as f:
             conn.executescript(f.read())

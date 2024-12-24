@@ -38,7 +38,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-      - ./backend/app/db/sample_data.db:/app/db/sample_data.db
+      - ./backend/app/db/:/app/db/
     env_file:
       - ./backend/.env
     environment:
