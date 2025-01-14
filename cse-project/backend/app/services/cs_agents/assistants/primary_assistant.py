@@ -1,6 +1,6 @@
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
-from app.services.cs_agents.tools import search_flights, lookup_policy, fetch_customer_information, fetch_order_information
+from app.services.cs_agents.tools import search_flights, lookup_policy, fetch_customer_information, fetch_order_information, fetch_product_information
 from datetime import datetime
 from app.core.config import settings
 from langchain_openai import ChatOpenAI
@@ -77,8 +77,11 @@ class ToBookExcursion(BaseModel):
 class ToHomeChargerAssistant(BaseModel):
     """Transfers work to a specialized assistant to handle home charger installation requests."""
 
-    customer_name: str = Field(
-        description="The name of the customer requesting the home charger installation."
+    customer_id: str = Field(
+        description="The ID of the customer requesting the home charger installation."
+    )
+    order_id: str = Field(
+        description="The ID of the id to be ordered."
     )
     product_id: str = Field(
         description="The ID of the product to be installed."
@@ -90,8 +93,9 @@ class ToHomeChargerAssistant(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "customer_name": "Mark Watts",
-                "product_id": "P50-HOME",
+                "customer_id": "CUST-001",
+                "order_id": "ORD-2024-0715-001",
+                "product_id": "PX-VPX1B",
                 "request": "I need the charger installed in my garage before I take delivery of my PalX.",
             }
         }
@@ -105,7 +109,7 @@ primary_assistant_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are a helpful customer support assistant for Home Depot. "
+            "You are a helpful customer support assistant for Tech Store."
             "Your primary role is to search for product information, order details, and installation services to answer customer queries. "
             "If a customer requests to update or cancel an order, book a service, or get product recommendations, "
             "delegate the task to the appropriate specialized assistant by invoking the corresponding tool. You are not able to make these types of changes yourself."
@@ -115,6 +119,12 @@ primary_assistant_prompt = ChatPromptTemplate.from_messages(
             " When searching, be persistent. Expand your query bounds if the first search returns no results. "
             " If a search comes up empty, expand your search before giving up."
             "\n\nCurrent user information:\n<Info>\n{user_info}\n</Info>"
+            # "\nCurrent order information:\n<Info>\n{order_info}\n</Info>"
+            # "\nCurrent product information:\n<Info>\n{product_info}\n</Info>"
+            # "\nCurrent installation requirements:\n<Info>\n{installation_requirements}\n</Info>"
+            # "\nCurrent installation slots:\n<Info>\n{installation_slots}\n</Info>"
+            # "\nCurrent product compatibility:\n<Info>\n{product_compatibility}\n</Info>"
+            # "\nCurrent product recommendations:\n<Info>\n{product_recommendations}\n</Info>"
             "\nCurrent time: {time}.",
         ),
         ("placeholder", "{messages}"),
@@ -126,15 +136,16 @@ primary_assistant_tools = [
     lookup_policy,
     fetch_customer_information,
     fetch_order_information,
+    fetch_product_information,
 ]
 
 primary_assistant_runnable = primary_assistant_prompt | llm.bind_tools(
     primary_assistant_tools
     + [
-        ToFlightBookingAssistant,
-        ToBookCarRental,
-        ToHotelBookingAssistant,
-        ToBookExcursion,
+        # ToFlightBookingAssistant,
+        # ToBookCarRental,
+        # ToHotelBookingAssistant,
+        # ToBookExcursion,
         ToHomeChargerAssistant,
     ]
 )
