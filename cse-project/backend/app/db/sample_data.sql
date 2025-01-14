@@ -106,7 +106,7 @@ INSERT INTO "installation_slots" VALUES (1,'2024-07-21','9:00','4-6 hours','TRUE
 INSERT INTO "installation_slots" VALUES (2,'2024-07-22','13:00','4-6 hours','TRUE');
 INSERT INTO "installation_slots" VALUES (3,'2024-07-27','9:00','4-6 hours','TRUE');
 INSERT INTO "installation_slots" VALUES (4,'2024-07-28','13:00','4-6 hours','TRUE');
-INSERT INTO "orders" VALUES ('ORD-2024-0715-001','CUST-001','PalX-VPX1B','2024-07-15','confirmed','scheduled','2024-Q3');
+INSERT INTO "orders" VALUES ('ORD-2024-0715-001','CUST-001','PX-VPX1B','2024-07-15','confirmed','scheduled','2024-Q3');
 INSERT INTO "product_compatibility" VALUES ('P50-HOME','PX-VPX1B');
 INSERT INTO "product_compatibility" VALUES ('F100-WALL','PX-VPX1B');
 INSERT INTO "product_compatibility" VALUES ('U150-PORT','PX-VPX1B');
