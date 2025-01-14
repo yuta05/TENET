@@ -25,6 +25,7 @@ class State(TypedDict):
                 "book_car_rental",
                 "book_hotel",
                 "book_excursion",
+                "home_charger",
             ]
         ],
         update_dialog_stack,
