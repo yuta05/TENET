@@ -11,7 +11,7 @@ from app.services.cs_agents.assistants.home_charger_assistant import home_charge
 from app.services.cs_agents.assistants.primary_assistant import primary_assistant_runnable, primary_assistant_tools
 from app.services.cs_agents.utils import create_entry_node, create_tool_node_with_fallback
 from app.services.cs_agents.state import State
-from app.services.cs_agents.tools import fetch_customer_information 
+from app.services.cs_agents.tools import fetch_customer_information, fetch_order_information, fetch_product_information
 from app.services.cs_agents.routes import (
     route_update_flight,
     route_book_car_rental,
@@ -27,9 +27,19 @@ builder = StateGraph(State)
 def user_info(state: State):
     return {"user_info": fetch_customer_information.invoke({})}
 
+def order_info(state: State):
+    return {"order_info": fetch_order_information.invoke({})}
+
+def product_info(state: State):
+    return {"product_info": fetch_product_information.invoke({})}
+
 builder.add_node("fetch_user_info", user_info)
 builder.add_edge(START, "fetch_user_info")
+# builder.add_node("fetch_order_info", order_info)
+# builder.add_edge("fetch_user_info", "fetch_order_info")
 
+# builder.add_node("fetch_product_info", product_info)
+# builder.add_edge("fetch_order_info", "fetch_product_info")
 
 # Flight booking assistant
 # builder.add_node(
