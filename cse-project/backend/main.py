@@ -25,21 +25,17 @@ async def lifespan(app: FastAPI):
     db_path = settings.DATABASE_URL
     db_dir = os.path.dirname(db_path)
     print(f"Connecting to database at {db_path}")
-
-    # ディレクトリが存在しない場合は作成
+    print(f"os.path: {os.path}")
+    # ディレクトリが存在しない場合はエラーを出力
     if not os.path.exists(db_dir):
-        os.makedirs(db_dir)
+        raise FileNotFoundError(f"Directory '{db_dir}' does not exist.")
     
     # データベース接続
-    # try:
-    #     app.state.db = sqlite3.connect(db_path)
-    # except sqlite3.OperationalError as e:
-    #     print(f"Error connecting to database: {e}")
-    #     raise e
     try:
         yield
     finally:
-        app.state.db.close()
+        if hasattr(app.state, 'db'):
+            app.state.db.close()
 
 app = FastAPI(lifespan=lifespan)
 
