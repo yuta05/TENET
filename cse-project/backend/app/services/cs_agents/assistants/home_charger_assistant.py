@@ -10,6 +10,13 @@ from app.services.cs_agents.tools import (
     fetch_required_tools,
     fetch_work_order_steps,
     fetch_work_order_templates,
+    fetch_installation_requirements,
+    fetch_installation_slots,
+    fetch_product_compatibility,
+    fetch_product_recommendations,
+    update_orders,
+    update_installation_service,
+    add_orders
 )
 from app.services.cs_agents.assistants.primary_assistant import llm
 
@@ -17,17 +24,18 @@ home_charger_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are a specialized assistant for handling home charger installation requests. "
-            "The primary assistant delegates work to you whenever the user needs help setting up a home charger. "
-            "Fetch the requested information from the database and provide it to the user. "
-            "Confirm the installation details with the customer and inform them of any additional requirements. "
-            "When searching, be persistent. Expand your query bounds if the first search returns no results. "
-            "If you need more information or the customer changes their mind, escalate the task back to the main assistant."
-            " Remember that an installation isn't completed until after the relevant tool has successfully been used."
-            "\n\nCurrent user order information:\n<Orders>\n{user_info}\n</Orders>"
-            "\nCurrent time: {time}."
-            "\n\nIf the user needs help, and none of your tools are appropriate for it, then"
-            ' "CompleteOrEscalate" the dialog to the host assistant. Do not waste the user\'s time. Do not make up invalid tools or functions.',
+            "You are a helpful customer support assistant for installing home charger. "
+            "Your primary role is to assist customers with home charger of electric vehicle installations, product information, and order details. "
+            "If a customer requests to update or cancel an order, book a installation service, or get product information including compatibility, recommendations and specifications."
+            "delegate the task to the appropriate specialized assistant by invoking the corresponding tool. You are not able to make these types of changes yourself."
+            " Only the specialized assistants are given permission to do this for the user."
+            "The user is not aware of the different specialized assistants, so do not mention them; just quietly delegate through function calls. "
+            "Provide detailed information to the customer, and always double-check the database before concluding that information is unavailable. "
+            " When searching, be persistent. Expand your query bounds if the first search returns no results. "
+            " If a search comes up empty, expand your search before giving up."
+            "\n\nCurrent user information:\n<Info>\n{user_info}\n</Info>"
+            "\n\nPlease note that before proceeding with updating, adding, or canceling an order, I will provide you with the necessary information and confirm your decision. "
+            "This ensures that you are fully aware of any potential fees or changes that may apply.",
         ),
         ("placeholder", "{messages}"),
     ]
@@ -42,8 +50,18 @@ home_charger_safe_tools = [
     fetch_required_tools,
     fetch_work_order_steps,
     fetch_work_order_templates,
+    fetch_installation_requirements,
+    fetch_installation_slots,
+    fetch_product_compatibility,
+    fetch_product_recommendations,
+    update_orders,
+    update_installation_service,
+    add_orders
 ]
-home_charger_sensitive_tools = []
+home_charger_sensitive_tools = [
+    # update_orders,
+    # update_installation_service
+]
 home_charger_tools = home_charger_safe_tools + home_charger_sensitive_tools
 home_charger_runnable = home_charger_prompt | llm.bind_tools(
     home_charger_tools + [CompleteOrEscalate]
