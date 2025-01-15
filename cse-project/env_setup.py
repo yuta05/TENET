@@ -2,6 +2,9 @@ import os
 import shutil
 
 def copy_env_example(src, dest):
+    if os.path.exists(dest):
+        print(f"{dest} already exists. Skipping creation.")
+        return
     if os.path.exists(src):
         shutil.copy(src, dest)
         print(f"{dest} created successfully from {src}.")
