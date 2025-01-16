@@ -1,4 +1,6 @@
+import os
 import subprocess
+from database import initialize_database  # 既に移動済みの関数をインポート
 
 def run_command(command):
     try:
@@ -13,11 +15,17 @@ def run_command(command):
         raise
 
 def setup_services():
+    print("Creating .env files...")
+    run_command('python env_setup.py')  # env_setup.py を実行
+
     print("Stopping any running containers...")
     run_command('docker-compose down')
 
     print("Building and running all containers in development mode...")
     run_command('docker-compose up --build -d')
+
+    print("Initializing the database...")
+    initialize_database('./backend/app/db/sample_data.db', './backend/app/db/sample_data.sql')
 
     print("\nSetup completed successfully!")
     print("Frontend is accessible at: http://localhost:3000/")

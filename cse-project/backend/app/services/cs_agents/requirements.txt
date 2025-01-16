@@ -17,7 +17,7 @@ langchain_openai>=0.2.4
 llama-index>=0.11.21,<1.0.0
 openai>=1.52.2
 langsmith>=0.1.140
-langgraph>=0.2.45
+langgraph>=0.2.53
 langchain-anthropic>=0.2.4
 tavily-python>=0.5.0
 pandas>=2.2.3
@@ -43,3 +43,4 @@ requests>=2.32.3  # Ensure requests is included
 # Additional Packages
 IPython>=8.0.0  # Ensure IPython is included
 typing_extensions>=4.0.0  # Ensure typing_extensions is included
+

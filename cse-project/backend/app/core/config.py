@@ -4,23 +4,15 @@ from typing import List
 class Settings(BaseSettings):
     PROJECT_NAME: str = "CSE Chatbot"
     VERSION: str = "0.1.0"
-    PORT: int = 8000    # 追加
+    PORT: int = 8000
     ENVIRONMENT: str
     jwt_secret: str
     jwt_algorithm: str
+    DATABASE_URL: str = "/cse-project/backend/app/db/sample_data.db"
+    NODE_ENV: str = "development"
+    BACKEND_PORT: int = 8000
     # CORS
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000"]
-    
-    # MongoDB
-    MONGODB_URL: str 
-    MONGODB_DB_NAME: str = "cse"
-    
-    # Redis
-    REDIS_URL: str
-    
-    # Milvus
-    MILVUS_HOST: str
-    MILVUS_PORT: int
     
     # OpenAI
     OPENAI_API_KEY: str
@@ -31,6 +23,9 @@ class Settings(BaseSettings):
     
     # Tavily
     TAVILY_API_KEY: str
+
+    # Anthropic
+    ANTHROPIC_API_KEY: str
     
     class Config:
         env_file = ".env"

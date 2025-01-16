@@ -1,20 +1,15 @@
-FROM python:3.9-slim
+# ベースイメージを最新の Python バージョンに更新
+FROM python:3.11-slim
 
+# 作業ディレクトリを設定
 WORKDIR /app
 
-# システムの依存関係をインストール
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Python パッケージをインストール
-COPY requirements.txt requirements-dev.txt ./
-
-# 環境変数に基づいてパッケージをインストール
+# 依存関係をコピーしてインストール
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # アプリケーションコードをコピー
 COPY . .
 
-# FastAPI アプリケーションを起動
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# アプリケーションを実行
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
