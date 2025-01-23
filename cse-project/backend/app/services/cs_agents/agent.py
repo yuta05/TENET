@@ -9,6 +9,8 @@ from app.services.cs_agents.assistants.car_rental_assistant import book_car_rent
 from app.services.cs_agents.assistants.excursion_assistant import book_excursion_runnable, book_excursion_safe_tools, book_excursion_sensitive_tools
 from app.services.cs_agents.assistants.home_charger_assistant import home_charger_runnable, home_charger_safe_tools, home_charger_sensitive_tools
 from app.services.cs_agents.assistants.primary_assistant import primary_assistant_runnable, primary_assistant_tools
+from app.services.cs_agents.assistants.product_recommendation_assistant import product_recommendation_runnable, product_recommendation_safe_tools, product_recommendation_sensitive_tools
+from app.services.cs_agents.assistants.order_management_assistant import order_management_runnable, order_management_safe_tools, order_management_sensitive_tools
 from app.services.cs_agents.utils import create_entry_node, create_tool_node_with_fallback
 from app.services.cs_agents.state import State
 from app.services.cs_agents.tools import fetch_customer_information, fetch_order_information, fetch_product_information
@@ -20,6 +22,8 @@ from app.services.cs_agents.routes import (
     route_home_charger,
     route_primary_assistant,
     route_to_workflow,
+    route_order_management,
+    route_product_recommendation,
 )
 
 builder = StateGraph(State)
@@ -35,6 +39,7 @@ def product_info(state: State):
 
 builder.add_node("fetch_user_info", user_info)
 builder.add_edge(START, "fetch_user_info")
+
 # builder.add_node("fetch_order_info", order_info)
 # builder.add_edge("fetch_user_info", "fetch_order_info")
 
@@ -166,6 +171,53 @@ builder.add_conditional_edges(
     ["home_charger_safe_tools", "home_charger_sensitive_tools", "leave_skill", END],
 )
 
+# Order Management assistant
+builder.add_node(
+    "enter_order_management",
+    create_entry_node("Order Management assistant", "order_management"),
+)
+builder.add_node("order_management", Assistant(order_management_runnable))
+builder.add_edge("enter_order_management", "order_management")
+builder.add_node(
+    "order_management_safe_tools",
+    create_tool_node_with_fallback(order_management_safe_tools),
+)
+builder.add_node(
+    "order_management_sensitive_tools",
+    create_tool_node_with_fallback(order_management_sensitive_tools),
+)
+
+builder.add_edge("order_management_sensitive_tools", "order_management")
+builder.add_edge("order_management_safe_tools", "order_management")
+builder.add_conditional_edges(
+    "order_management",
+    route_order_management,
+    ["order_management_safe_tools", "order_management_sensitive_tools", "leave_skill", END],
+)
+
+# Product Recommendation assistant
+builder.add_node(
+    "enter_product_recommendation",
+    create_entry_node("Product Recommendation Assistant", "product_recommendation"),
+)
+builder.add_node("product_recommendation", Assistant(product_recommendation_runnable))
+builder.add_edge("enter_product_recommendation", "product_recommendation")
+builder.add_node(
+    "product_recommendation_safe_tools",
+    create_tool_node_with_fallback(product_recommendation_safe_tools),
+)
+builder.add_node(
+    "product_recommendation_sensitive_tools",
+    create_tool_node_with_fallback(product_recommendation_sensitive_tools),
+)
+
+builder.add_edge("product_recommendation_sensitive_tools", "product_recommendation")
+builder.add_edge("product_recommendation_safe_tools", "product_recommendation")
+builder.add_conditional_edges(
+    "product_recommendation",
+    route_product_recommendation,
+    ["product_recommendation_safe_tools", "product_recommendation_sensitive_tools", "leave_skill", END],
+)
 # This node will be shared for exiting all specialized assistants
 def pop_dialog_state(state: State) -> dict:
     """Pop the dialog stack and return to the main assistant.
@@ -207,6 +259,8 @@ builder.add_conditional_edges(
         # "enter_book_hotel",
         # "enter_book_excursion",
         "enter_home_charger",
+        "enter_order_management",
+        "enter_product_recommendation",
         "primary_assistant_tools",
         END,
     ],
@@ -226,5 +280,7 @@ part_4_graph = builder.compile(
         # "book_hotel_sensitive_tools",
         # "book_excursion_sensitive_tools",
         "home_charger_sensitive_tools",
+        "order_management_sensitive_tools",
+        "product_recommendation_sensitive_tools",
     ],
 )

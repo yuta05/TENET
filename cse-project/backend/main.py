@@ -24,8 +24,11 @@ app.add_middleware(
 async def lifespan(app: FastAPI):
     db_path = settings.DATABASE_URL
     db_dir = os.path.dirname(db_path)
+    print(f"os:  {os}")
     print(f"Connecting to database at {db_path}")
     print(f"os.path: {os.path}")
+    print(f"Database directory: {db_dir}")
+    print(f"Database exists: {os.path.exists(db_dir)}")
     # ディレクトリが存在しない場合はエラーを出力
     if not os.path.exists(db_dir):
         raise FileNotFoundError(f"Directory '{db_dir}' does not exist.")

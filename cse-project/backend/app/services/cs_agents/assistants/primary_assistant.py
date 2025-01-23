@@ -100,6 +100,53 @@ class ToHomeChargerAssistant(BaseModel):
             }
         }
 
+class ToOrderManagementAssistant(BaseModel):
+    """Transfers work to a specialized assistant to handle order management."""
+
+    customer_id: str = Field(
+        description="The ID of the customer managing the order."
+    )
+    order_id: str = Field(
+        description="The ID of the order to be managed."
+    )
+    action: str = Field(
+        description="The action to be performed on the order (e.g., update, cancel)."
+    )
+    request: str = Field(
+        description="Any additional information or requests from the user regarding the order management."
+    )
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "customer_id": "CUST-001",
+                "order_id": "ORD-2024-0715-001",
+                "action": "update",
+                "request": "Please update the delivery status to 'shipped'.",
+            }
+        }
+
+class ToProductRecommendationAssistant(BaseModel):
+    """Transfers work to a specialized assistant to handle product recommendations."""
+
+    customer_id: str = Field(
+        description="The ID of the customer requesting the product recommendation."
+    )
+    product_id: str = Field(
+        description="The ID of the product to be recommended."
+    )
+    request: str = Field(
+        description="Any additional information or requests from the user regarding the product recommendation."
+    )
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "customer_id": "CUST-001",
+                "product_id": "PX-VPX1B",
+                "request": "Please recommend compatible products for my electric vehicle.",
+            }
+        }
 # The top-level assistant performs general Q&A and delegates specialized tasks to other assistants.
 # The task delegation is a simple form of semantic routing / does simple intent detection
 
@@ -110,9 +157,11 @@ primary_assistant_prompt = ChatPromptTemplate.from_messages(
         (
             "system",
             "You are a helpful customer support assistant for Tech Store."
-            "Your primary role is to search for product information, order details, and installation services to answer customer queries. "
-            "If a customer requests to update or cancel an order, book a service, or get product recommendations, "
-            "delegate the task to the appropriate specialized assistant by invoking the corresponding tool. You are not able to make these types of changes yourself."
+            "Your primary role is to search for customer information, order information and product information to answer question from customers."
+            "If a customer requests to update or cancel an existing order or to add a new order, delegate the task to Order Management Assistant."
+            "If a customer requests a product recommendation, delegate the task to Product Recommendation Assistant."
+            "If a customer who has a charger in his or her order requests a charger installation support, delegate the task to Home Charger Assistant."
+            "Delegate the task to the appropriate specialized assistant by invoking the corresponding tool. You are not able to make these types of changes yourself."
             " Only the specialized assistants are given permission to do this for the user."
             "The user is not aware of the different specialized assistants, so do not mention them; just quietly delegate through function calls. "
             "Provide detailed information to the customer, and always double-check the database before concluding that information is unavailable. "
@@ -147,5 +196,7 @@ primary_assistant_runnable = primary_assistant_prompt | llm.bind_tools(
         # ToHotelBookingAssistant,
         # ToBookExcursion,
         ToHomeChargerAssistant,
+        ToOrderManagementAssistant,
+        ToProductRecommendationAssistant,
     ]
 )

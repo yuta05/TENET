@@ -8,21 +8,21 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.
 
 from app.services.cs_agents.tools.home_charger_tools import (
     fetch_customer_information,
-    fetch_order_information,
-    fetch_product_information,
-    fetch_product_specifications,
-    fetch_installation_requirements,
-    fetch_installation_slots,
-    fetch_product_compatibility,
-    fetch_product_recommendations,
-    fetch_region_requirements,
-    fetch_required_tools,
-    fetch_work_order_steps,
-    fetch_work_order_templates,
-    add_orders,
-    update_orders,
-    update_installation_service,
-    insert_order  # insert_order関数をインポート
+    # fetch_order_information,
+    # fetch_product_information,
+    # fetch_product_specifications,
+    # fetch_installation_requirements,
+    # fetch_installation_slots,
+    # fetch_product_compatibility,
+    # fetch_product_recommendations,
+    # fetch_region_requirements,
+    # fetch_required_tools,
+    # fetch_work_order_steps,
+    # fetch_work_order_templates,
+    # add_orders,
+    # update_orders,
+    # update_installation_service,
+    # insert_order  # insert_order関数をインポート
 )
 
 # テスト用の設定
@@ -169,7 +169,7 @@ def test_insert_order():
     print(result)
 
 if __name__ == "__main__":
-    # test_fetch_customer_information()
+    test_fetch_customer_information()
     # test_fetch_order_information()
     # test_fetch_product_information()
     # test_fetch_product_specifications()
@@ -182,6 +182,6 @@ if __name__ == "__main__":
     # test_fetch_work_order_steps()
     # test_fetch_work_order_templates()
     # test_add_orders()
-    test_update_orders()
-    test_update_installation_service()
+    # test_update_orders()
+    # test_update_installation_service()
     # test_insert_order()  # insert_orderのテストを実行
